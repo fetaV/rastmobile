@@ -1,8 +1,9 @@
 "use client"
 import React, { useState, useEffect } from "react"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
+import Card from "./Card"
 
-const DashboardComponent = () => {
+const Board = () => {
   const initialData = [
     {
       id: 1,
@@ -189,16 +190,16 @@ const DashboardComponent = () => {
             <button type="submit">Create Task</button>
           </form>
           <DragDropContext onDragEnd={handleDragEnd}>
-            <div className="flex">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4">
               {dashboard.map(board => (
-                <div key={board.id} className="flex-1 p-4">
-                  <h2 className="text-xl font-bold mb-4">{board.name}</h2>
+                <div key={board.id} className="bg-gray-100 p-4 rounded column">
+                  <h2 className="text-lg font-bold mb-4">{board.name}</h2>
                   <Droppable droppableId={board.id.toString()} key={board.id}>
                     {(provided, snapshot) => (
                       <div
                         ref={provided.innerRef}
                         {...provided.droppableProps}
-                        className="bg-gray-200 p-2 rounded"
+                        className=" p-2 rounded"
                       >
                         {board.tasks.map((task, index) => (
                           <Draggable
@@ -208,30 +209,15 @@ const DashboardComponent = () => {
                           >
                             {(provided, snapshot) => (
                               <div
+                                className="text-white shadow-md rounded-lg mb-4"
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
-                                className="bg-white p-2 rounded mb-2"
                               >
-                                <p>{task.name}</p>
-                                <button
-                                  onClick={() => {
-                                    setEditTaskId(task.id)
-                                    setEditTaskFormData({
-                                      name: task.name,
-                                      description: task.description,
-                                    })
-                                  }}
-                                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-2"
-                                >
-                                  Edit
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteTask(task.id)}
-                                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                >
-                                  Delete
-                                </button>
+                                <Card
+                                  title={task.name}
+                                  description={task.description}
+                                />
                               </div>
                             )}
                           </Draggable>
@@ -304,4 +290,4 @@ const DashboardComponent = () => {
   )
 }
 
-export default DashboardComponent
+export default Board
