@@ -31,7 +31,7 @@ const Board = () => {
     },
     {
       id: 4,
-      name: "Done",
+      name: "Designed",
       tasks: [
         { id: 7, name: "Task 1", description: "Description 1", flagId: 7 },
         { id: 8, name: "Task 2", description: "Description 2", flagId: 8 },
@@ -167,124 +167,123 @@ const Board = () => {
             {menuOpen ? "Close Menu" : "Open Menu"}
           </button>
         </header>
-        <div className="container mx-auto py-8 px-4">
-          <form onSubmit={handleAdd}>
-            <div>
-              <label>Task Name:</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label>Description:</label>
-              <input
-                type="text"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-              />
-            </div>
-            <button type="submit">Create Task</button>
-          </form>
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4">
-              {dashboard.map(board => (
-                <div key={board.id} className="bg-gray-100 p-4 rounded column">
-                  <h2 className="text-lg font-bold mb-4">{board.name}</h2>
-                  <Droppable droppableId={board.id.toString()} key={board.id}>
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className=" p-2 rounded"
-                      >
-                        {board.tasks.map((task, index) => (
-                          <Draggable
-                            key={task.id}
-                            draggableId={task.id.toString()}
-                            index={index}
-                          >
-                            {(provided, snapshot) => (
-                              <div
-                                className="text-white shadow-md rounded-lg mb-4"
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                              >
-                                <Card
-                                  title={task.name}
-                                  description={task.description}
-                                />
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </div>
-              ))}
-            </div>
-          </DragDropContext>
-          {editTaskId && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-              <div className="bg-white p-6 rounded shadow-lg">
-                <h2 className="text-lg font-semibold mb-4">Edit Task</h2>
-                <form onSubmit={handleEditTask}>
-                  <div className="mb-4">
-                    <label className="block">Task Name:</label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={editTaskFormData.name}
-                      onChange={e =>
-                        setEditTaskFormData({
-                          ...editTaskFormData,
-                          name: e.target.value,
-                        })
-                      }
-                      className="border rounded px-3 py-1 w-full"
-                    />
-                  </div>
-                  <div className="mb-4">
-                    <label className="block">Description:</label>
-                    <input
-                      type="text"
-                      name="description"
-                      value={editTaskFormData.description}
-                      onChange={e =>
-                        setEditTaskFormData({
-                          ...editTaskFormData,
-                          description: e.target.value,
-                        })
-                      }
-                      className="border rounded px-3 py-1 w-full"
-                    />
-                  </div>
-                  <div>
-                    <button
-                      type="button"
-                      onClick={() => setEditTaskId(null)}
-                      className="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded mr-2"
+        <form onSubmit={handleAdd}>
+          <div>
+            <label>Task Name:</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label>Description:</label>
+            <input
+              type="text"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+            />
+          </div>
+          <button type="submit">Create Task</button>
+        </form>
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4">
+            {dashboard.map(board => (
+              <div key={board.id} className="bg-gray-100 p-4 rounded column">
+                <h2 className="text-lg font-bold mb-4">{board.name}</h2>
+                <Droppable droppableId={board.id.toString()} key={board.id}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      className=" p-2 rounded"
                     >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
-                    >
-                      Save
-                    </button>
-                  </div>
-                </form>
+                      {board.tasks.map((task, index) => (
+                        <Draggable
+                          key={task.id}
+                          draggableId={task.id.toString()}
+                          index={index}
+                        >
+                          {(provided, snapshot) => (
+                            <div
+                              className="text-white shadow-md rounded-lg mb-4"
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <Card
+                                title={task.name}
+                                description={task.description}
+                                style={{ backgroundColor: "#C340A1" }}
+                              />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
               </div>
+            ))}
+          </div>
+        </DragDropContext>
+        {editTaskId && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-6 rounded shadow-lg">
+              <h2 className="text-lg font-semibold mb-4">Edit Task</h2>
+              <form onSubmit={handleEditTask}>
+                <div className="mb-4">
+                  <label className="block">Task Name:</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={editTaskFormData.name}
+                    onChange={e =>
+                      setEditTaskFormData({
+                        ...editTaskFormData,
+                        name: e.target.value,
+                      })
+                    }
+                    className="border rounded px-3 py-1 w-full"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block">Description:</label>
+                  <input
+                    type="text"
+                    name="description"
+                    value={editTaskFormData.description}
+                    onChange={e =>
+                      setEditTaskFormData({
+                        ...editTaskFormData,
+                        description: e.target.value,
+                      })
+                    }
+                    className="border rounded px-3 py-1 w-full"
+                  />
+                </div>
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setEditTaskId(null)}
+                    className="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded mr-2"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                  >
+                    Save
+                  </button>
+                </div>
+              </form>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </>
   )
