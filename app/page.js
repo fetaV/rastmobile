@@ -1,5 +1,6 @@
 import Head from "next/head"
 import Board from "./Board"
+import Board2 from "./Board2"
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
 
       <main>
         <Board />
+        <Board2 />
       </main>
     </div>
   )

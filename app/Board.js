@@ -9,10 +9,12 @@ const Board = () => {
       <div className="bg-gray-100 p-4 rounded column">
         <h2 className="text-lg font-bold mb-4">Backlog</h2>
         <Card
+          style={{ backgroundColor: "#C340A1" }}
           title="Twilio integration"
           description="Create new note via SMS. Support text, audio, links, and media."
         />
         <Card
+          style={{ backgroundColor: "##6A6DCD" }}
           title="Markdown support"
           description="Markdown shorthand converts to formatting"
         />
