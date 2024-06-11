@@ -3,11 +3,10 @@ import React, { useState, useEffect } from "react"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 
 const DashboardComponent = () => {
-  // Başlangıç verisi
   const initialData = [
     {
       id: 1,
-      name: "To Do",
+      name: "Backlog",
       tasks: [
         { id: 1, name: "Task 1", description: "Description 1", flagId: 1 },
         { id: 2, name: "Task 2", description: "Description 2", flagId: 2 },
@@ -15,9 +14,26 @@ const DashboardComponent = () => {
     },
     {
       id: 2,
+      name: "To Do",
+      tasks: [
+        { id: 3, name: "Task 1", description: "Description 1", flagId: 3 },
+        { id: 4, name: "Task 2", description: "Description 2", flagId: 4 },
+      ],
+    },
+    {
+      id: 3,
       name: "In Progress",
       tasks: [
-        { id: 3, name: "Task 3", description: "Description 3", flagId: 3 },
+        { id: 5, name: "Task 1", description: "Description 1", flagId: 5 },
+        { id: 6, name: "Task 2", description: "Description 2", flagId: 6 },
+      ],
+    },
+    {
+      id: 4,
+      name: "Done",
+      tasks: [
+        { id: 7, name: "Task 1", description: "Description 1", flagId: 7 },
+        { id: 8, name: "Task 2", description: "Description 2", flagId: 8 },
       ],
     },
   ]
@@ -31,7 +47,6 @@ const DashboardComponent = () => {
   })
 
   useEffect(() => {
-    // Başlangıç verilerini yükleme
     setDashboard(initialData)
   }, [])
 
@@ -76,10 +91,10 @@ const DashboardComponent = () => {
 
     const newDashboard = [...dashboard]
     const sourceColumnIndex = newDashboard.findIndex(
-      column => column.name === source.droppableId
+      column => column.id.toString() === source.droppableId
     )
     const destinationColumnIndex = newDashboard.findIndex(
-      column => column.name === destination.droppableId
+      column => column.id.toString() === destination.droppableId
     )
     const draggedTask = newDashboard[sourceColumnIndex].tasks.find(
       task => task.id.toString() === draggableId
@@ -91,7 +106,7 @@ const DashboardComponent = () => {
       0,
       draggedTask
     )
-    setDashboard(newDashboard) // Yeniden oluşturulan diziyi setDashboard ile ayarlayın
+    setDashboard(newDashboard)
   }
 
   const [formData, setFormData] = useState({
@@ -148,7 +163,7 @@ const DashboardComponent = () => {
       >
         <header className="bg-gray-800 text-white py-4 px-6 flex justify-between items-center">
           <button onClick={toggleMenu} className="block">
-            {menuOpen ? "kargakarga" : "kargakarga"}
+            {menuOpen ? "Close Menu" : "Open Menu"}
           </button>
         </header>
         <div className="container mx-auto py-8 px-4">
@@ -178,7 +193,7 @@ const DashboardComponent = () => {
               {dashboard.map(board => (
                 <div key={board.id} className="flex-1 p-4">
                   <h2 className="text-xl font-bold mb-4">{board.name}</h2>
-                  <Droppable droppableId={board.name} key={board.id}>
+                  <Droppable droppableId={board.id.toString()} key={board.id}>
                     {(provided, snapshot) => (
                       <div
                         ref={provided.innerRef}
@@ -209,13 +224,13 @@ const DashboardComponent = () => {
                                   }}
                                   className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-2"
                                 >
-                                  Düzenle
+                                  Edit
                                 </button>
                                 <button
                                   onClick={() => handleDeleteTask(task.id)}
                                   className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                                 >
-                                  Sil
+                                  Delete
                                 </button>
                               </div>
                             )}
@@ -232,10 +247,10 @@ const DashboardComponent = () => {
           {editTaskId && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
               <div className="bg-white p-6 rounded shadow-lg">
-                <h2 className="text-lg font-semibold mb-4">Görev Düzenle</h2>
+                <h2 className="text-lg font-semibold mb-4">Edit Task</h2>
                 <form onSubmit={handleEditTask}>
                   <div className="mb-4">
-                    <label className="block">Görev Adı:</label>
+                    <label className="block">Task Name:</label>
                     <input
                       type="text"
                       name="name"
@@ -250,7 +265,7 @@ const DashboardComponent = () => {
                     />
                   </div>
                   <div className="mb-4">
-                    <label className="block">Açıklama:</label>
+                    <label className="block">Description:</label>
                     <input
                       type="text"
                       name="description"
@@ -270,13 +285,13 @@ const DashboardComponent = () => {
                       onClick={() => setEditTaskId(null)}
                       className="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded mr-2"
                     >
-                      İptal
+                      Cancel
                     </button>
                     <button
                       type="submit"
                       className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
                     >
-                      Kaydet
+                      Save
                     </button>
                   </div>
                 </form>
