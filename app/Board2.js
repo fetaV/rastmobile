@@ -75,19 +75,23 @@ const DashboardComponent = () => {
     }
 
     const newDashboard = [...dashboard]
-    const sourceColumn = newDashboard.find(
+    const sourceColumnIndex = newDashboard.findIndex(
       column => column.name === source.droppableId
     )
-    const destinationColumn = newDashboard.find(
+    const destinationColumnIndex = newDashboard.findIndex(
       column => column.name === destination.droppableId
     )
-    const draggedTask = sourceColumn.tasks.find(
+    const draggedTask = newDashboard[sourceColumnIndex].tasks.find(
       task => task.id.toString() === draggableId
     )
 
-    sourceColumn.tasks.splice(source.index, 1)
-    destinationColumn.tasks.splice(destination.index, 0, draggedTask)
-    setDashboard(newDashboard)
+    newDashboard[sourceColumnIndex].tasks.splice(source.index, 1)
+    newDashboard[destinationColumnIndex].tasks.splice(
+      destination.index,
+      0,
+      draggedTask
+    )
+    setDashboard(newDashboard) // Yeniden oluşturulan diziyi setDashboard ile ayarlayın
   }
 
   const [formData, setFormData] = useState({
