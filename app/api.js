@@ -59,7 +59,7 @@ export const deleteTask = async (taskId, boardName) => {
 // api.js
 export const moveTask = async moveInfo => {
   try {
-    const response = await axios.put(`${API_URL}/tasks/move`, moveInfo, {
+    const response = await axios.post(`${API_URL}/tasks/move`, moveInfo, {
       headers: {
         "Content-Type": "application/json",
       },
