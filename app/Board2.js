@@ -1,44 +1,11 @@
+// Board2.js
 "use client"
 import React, { useState, useEffect } from "react"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 import Card from "./Card"
+import { getBoards, createTask, updateTask, deleteTask, moveTask } from "./api"
 
 const Board = () => {
-  const initialData = [
-    {
-      id: 1,
-      name: "Backlog",
-      tasks: [
-        { id: 1, name: "Task 1", description: "Description 1", flagId: 1 },
-        { id: 2, name: "Task 2", description: "Description 2", flagId: 2 },
-      ],
-    },
-    {
-      id: 2,
-      name: "To Do",
-      tasks: [
-        { id: 3, name: "Task 1", description: "Description 1", flagId: 3 },
-        { id: 4, name: "Task 2", description: "Description 2", flagId: 4 },
-      ],
-    },
-    {
-      id: 3,
-      name: "In Progress",
-      tasks: [
-        { id: 5, name: "Task 1", description: "Description 1", flagId: 5 },
-        { id: 6, name: "Task 2", description: "Description 2", flagId: 6 },
-      ],
-    },
-    {
-      id: 4,
-      name: "Designed",
-      tasks: [
-        { id: 7, name: "Task 1", description: "Description 1", flagId: 7 },
-        { id: 8, name: "Task 2", description: "Description 2", flagId: 8 },
-      ],
-    },
-  ]
-
   const [dashboard, setDashboard] = useState([])
   const [menuOpen, setMenuOpen] = useState(false)
   const [editTaskId, setEditTaskId] = useState(null)
@@ -48,26 +15,33 @@ const Board = () => {
   })
 
   useEffect(() => {
-    setDashboard(initialData)
+    const fetchBoards = async () => {
+      const boards = await getBoards()
+      setDashboard(boards)
+    }
+    fetchBoards()
   }, [])
 
-  const handleEditTask = () => {
+  const handleEditTask = async () => {
+    const boardName = findBoardNameByTaskId(editTaskId)
+    await updateTask(editTaskId, { ...editTaskFormData, boardName })
     setDashboard(prevDashboard =>
       prevDashboard.map(board => ({
         ...board,
         tasks: board.tasks.map(task =>
-          task.id === editTaskId ? { ...task, ...editTaskFormData } : task
+          task._id === editTaskId ? { ...task, ...editTaskFormData } : task
         ),
       }))
     )
     setEditTaskId(null)
   }
 
-  const handleDeleteTask = taskId => {
+  const handleDeleteTask = async (taskId, boardName) => {
+    await deleteTask(taskId, boardName)
     setDashboard(prevDashboard =>
       prevDashboard.map(board => ({
         ...board,
-        tasks: board.tasks.filter(task => task.id !== taskId),
+        tasks: board.tasks.filter(task => task._id !== taskId),
       }))
     )
   }
@@ -76,7 +50,7 @@ const Board = () => {
     setMenuOpen(!menuOpen)
   }
 
-  const handleDragEnd = result => {
+  const handleDragEnd = async result => {
     const { destination, source, draggableId } = result
 
     if (!destination) {
@@ -90,15 +64,27 @@ const Board = () => {
       return
     }
 
+    const sourceBoardName = findBoardNameByBoardId(source.droppableId)
+    const destinationBoardName = findBoardNameByBoardId(destination.droppableId)
+    const moveInfo = {
+      sourceBoardName,
+      destinationBoardName,
+      taskId: draggableId,
+      sourceIndex: source.index,
+      destinationIndex: destination.index,
+    }
+
+    await moveTask(moveInfo)
+
     const newDashboard = [...dashboard]
     const sourceColumnIndex = newDashboard.findIndex(
-      column => column.id.toString() === source.droppableId
+      column => column._id === source.droppableId
     )
     const destinationColumnIndex = newDashboard.findIndex(
-      column => column.id.toString() === destination.droppableId
+      column => column._id === destination.droppableId
     )
     const draggedTask = newDashboard[sourceColumnIndex].tasks.find(
-      task => task.id.toString() === draggableId
+      task => task._id === draggableId
     )
 
     newDashboard[sourceColumnIndex].tasks.splice(source.index, 1)
@@ -113,8 +99,7 @@ const Board = () => {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    boardId: 1,
-    flagId: 0,
+    boardName: "Backlog",
   })
 
   const handleChange = e => {
@@ -125,16 +110,16 @@ const Board = () => {
     })
   }
 
-  const handleAdd = e => {
+  const handleAdd = async e => {
     e.preventDefault()
-    const newTask = {
-      id: Date.now(),
+    const newTask = await createTask({
       ...formData,
       flagId: findNextFlagId(),
-    }
+    })
+
     setDashboard(prevDashboard =>
       prevDashboard.map(board =>
-        board.id === formData.boardId
+        board.name === formData.boardName
           ? { ...board, tasks: [...board.tasks, newTask] }
           : board
       )
@@ -142,9 +127,20 @@ const Board = () => {
     setFormData({
       name: "",
       description: "",
-      boardId: 1,
-      flagId: 0,
+      boardName: "Backlog",
     })
+  }
+
+  const findBoardNameByTaskId = taskId => {
+    const board = dashboard.find(board =>
+      board.tasks.some(task => task._id === taskId)
+    )
+    return board ? board.name : null
+  }
+
+  const findBoardNameByBoardId = boardId => {
+    const board = dashboard.find(board => board._id === boardId)
+    return board ? board.name : null
   }
 
   const findNextFlagId = () => {
@@ -186,24 +182,38 @@ const Board = () => {
               onChange={handleChange}
             />
           </div>
+          <div>
+            <label>Board:</label>
+            <select
+              name="boardName"
+              value={formData.boardName}
+              onChange={handleChange}
+            >
+              {dashboard.map(board => (
+                <option key={board._id} value={board.name}>
+                  {board.name}
+                </option>
+              ))}
+            </select>
+          </div>
           <button type="submit">Create Task</button>
         </form>
         <DragDropContext onDragEnd={handleDragEnd}>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4">
             {dashboard.map(board => (
-              <div key={board.id} className="bg-gray-100 p-4 rounded column">
+              <div key={board._id} className="bg-gray-100 p-4 rounded column">
                 <h2 className="text-lg font-bold mb-4">{board.name}</h2>
-                <Droppable droppableId={board.id.toString()} key={board.id}>
+                <Droppable droppableId={board._id.toString()} key={board._id}>
                   {(provided, snapshot) => (
                     <div
                       ref={provided.innerRef}
                       {...provided.droppableProps}
-                      className=" p-2 rounded"
+                      className="p-2 rounded"
                     >
                       {board.tasks.map((task, index) => (
                         <Draggable
-                          key={task.id}
-                          draggableId={task.id.toString()}
+                          key={task._id}
+                          draggableId={task._id.toString()}
                           index={index}
                         >
                           {(provided, snapshot) => (
@@ -217,6 +227,16 @@ const Board = () => {
                                 title={task.name}
                                 description={task.description}
                                 style={{ backgroundColor: "#C340A1" }}
+                                onDelete={() =>
+                                  handleDeleteTask(task._id, board.name)
+                                }
+                                onEdit={() => {
+                                  setEditTaskId(task._id)
+                                  setEditTaskFormData({
+                                    name: task.name,
+                                    description: task.description,
+                                  })
+                                }}
                               />
                             </div>
                           )}
