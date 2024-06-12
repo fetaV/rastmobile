@@ -11,7 +11,6 @@ export default function Home() {
       </Head>
 
       <main>
-        <Board />
         <Board2 />
       </main>
     </div>
