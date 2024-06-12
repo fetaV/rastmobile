@@ -112,9 +112,10 @@ const Board = () => {
 
   const handleAdd = async e => {
     e.preventDefault()
+    const flagId = findNextFlagId()
     const newTask = await createTask({
       ...formData,
-      flagId: findNextFlagId(),
+      flagId: flagId,
     })
 
     setDashboard(prevDashboard =>
@@ -147,6 +148,7 @@ const Board = () => {
     const flagIds = dashboard.reduce((acc, board) => {
       return acc.concat(board.tasks.map(task => task.flagId))
     }, [])
+    console.log(flagIds)
     const maxFlagId = Math.max(...flagIds)
     return maxFlagId + 1
   }
