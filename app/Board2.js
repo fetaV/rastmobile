@@ -161,6 +161,7 @@ const Board = () => {
           <input
             type="text"
             name="name"
+            className="text-black"
             value={formData.name}
             onChange={handleChange}
           />
@@ -170,6 +171,7 @@ const Board = () => {
           <input
             type="text"
             name="description"
+            className="text-black"
             value={formData.description}
             onChange={handleChange}
           />
@@ -180,6 +182,7 @@ const Board = () => {
             name="boardName"
             value={formData.boardName}
             onChange={handleChange}
+            className="text-black"
           >
             {dashboard.map(board => (
               <option key={board._id} value={board.name}>
