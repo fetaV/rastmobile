@@ -73,10 +73,12 @@ export const moveTask = async moveInfo => {
 
 // handleButtonClick function
 export const handleButtonClick = async id => {
-  console.log("123")
   if (id) {
     try {
-      await axios.post(`${API_URL}/save-id`, { idValue: id })
+      await saveId({ idValue: id })
+      setId("") // ID'i temizle
+      fetchData() // Yeniden verileri al
+      router.push(`/${id}/board`) // Yönlendirme işlemi
     } catch (error) {
       console.error("Error saving ID:", error)
     }
@@ -87,10 +89,9 @@ export const handleButtonClick = async id => {
 
 export const fetchIds = async () => {
   try {
-    const response = await axios.get(`${API_URL}/ids`)
-    return response.data
+    const fetchedIds = await fetchIds()
+    setIds(fetchedIds)
   } catch (error) {
     console.error("Error fetching IDs:", error)
-    throw error
   }
 }

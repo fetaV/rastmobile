@@ -1,26 +1,66 @@
 "use client"
-import React, { useEffect, useState } from "react"
-import { handleButtonClick, fetchIds } from "./api" // api.js dosyasının yolunu doğru ayarlayın
 
-function App() {
+import React, { useEffect, useState } from "react"
+import axios from "axios"
+import { useRouter } from "next/navigation"
+
+const API_URL = "http://localhost:5000"
+
+export default function App() {
+  const router = useRouter()
   const [id, setId] = useState("")
-  const [ids, setIds] = useState([]) // ID'leri saklamak için bir state
+  const [ids, setIds] = useState([])
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedIds = await fetchIds() // Backend'den ID'leri al
-        setIds(fetchedIds) // State'e kaydet
-      } catch (error) {
-        console.error("Error fetching IDs:", error)
-      }
-    }
-
     fetchData()
   }, [])
 
+  const fetchData = async () => {
+    try {
+      const fetchedIds = await fetchIds()
+      setIds(fetchedIds)
+    } catch (error) {
+      console.error("Error fetching IDs:", error)
+    }
+  }
+
   const handleInputChange = e => {
     setId(e.target.value)
+  }
+
+  const handleButtonClick = async () => {
+    console.log("123")
+    if (id) {
+      try {
+        await saveId({ idValue: id })
+        setId("") // ID'i temizle
+        fetchData() // Yeniden verileri al
+        router.push(`/${id}/dashboard`) // Yönlendirme işlemi
+      } catch (error) {
+        console.error("Error saving ID:", error)
+      }
+    } else {
+      alert("Please enter an ID")
+    }
+  }
+
+  const saveId = async data => {
+    try {
+      await axios.post(`${API_URL}/save-id`, data)
+    } catch (error) {
+      console.error("Error saving ID:", error)
+      throw error
+    }
+  }
+
+  const fetchIds = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/ids`)
+      return response.data
+    } catch (error) {
+      console.error("Error fetching IDs:", error)
+      throw error
+    }
   }
 
   return (
@@ -40,9 +80,7 @@ function App() {
         className="text-black"
         onChange={handleInputChange}
       />
-      <button onClick={() => handleButtonClick(id)}>Submit</button>
+      <button onClick={handleButtonClick}>Submit</button>
     </div>
   )
 }
-
-export default App
