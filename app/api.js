@@ -20,6 +20,7 @@ export const createTask = async task => {
         "Content-Type": "application/json",
       },
     })
+    console.log("response", response)
     return response.data
   } catch (error) {
     console.error("Error creating task:", error)

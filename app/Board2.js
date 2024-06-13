@@ -115,15 +115,16 @@ const Board = () => {
       flagId: flagId,
     })
 
+    // Yeni eklenen görevi uygun boarda ekleyin
     setDashboard(prevDashboard =>
       prevDashboard.map(board =>
         board.name === formData.boardName
-          ? { ...board, tasks: [...board.tasks, newTask] }
+          ? { ...board, tasks: [...board.tasks, newTask] } // Yeni görevi ekleyin
           : board
       )
     )
 
-    // Yeni veri eklendikten sonra formu sıfırlayın ve state'i güncelleyin
+    // Formu sıfırlayın
     setFormData({
       name: "",
       description: "",
