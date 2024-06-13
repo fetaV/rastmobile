@@ -57,7 +57,6 @@ export const deleteTask = async (taskId, boardName) => {
   }
 }
 
-// api.js
 export const moveTask = async moveInfo => {
   try {
     const response = await axios.post(`${API_URL}/tasks/move`, moveInfo, {
@@ -69,5 +68,29 @@ export const moveTask = async moveInfo => {
   } catch (error) {
     console.error("Error moving task:", error)
     throw error // rethrow or handle as needed
+  }
+}
+
+// handleButtonClick function
+export const handleButtonClick = async id => {
+  console.log("123")
+  if (id) {
+    try {
+      await axios.post(`${API_URL}/save-id`, { idValue: id })
+    } catch (error) {
+      console.error("Error saving ID:", error)
+    }
+  } else {
+    alert("Please enter an ID")
+  }
+}
+
+export const fetchIds = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/ids`)
+    return response.data
+  } catch (error) {
+    console.error("Error fetching IDs:", error)
+    throw error
   }
 }
