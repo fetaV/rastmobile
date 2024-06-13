@@ -50,31 +50,15 @@ const Board = () => {
     setMenuOpen(!menuOpen)
   }
 
-  const handleDragEnd = async result => {
+  const handleDragEnd = result => {
     const { destination, source, draggableId } = result
 
     if (!destination) {
       return
     }
 
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
-      return
-    }
-
     const sourceBoardName = findBoardNameByBoardId(source.droppableId)
     const destinationBoardName = findBoardNameByBoardId(destination.droppableId)
-    const moveInfo = {
-      sourceBoardName,
-      destinationBoardName,
-      taskId: draggableId,
-      sourceIndex: source.index,
-      destinationIndex: destination.index,
-    }
-
-    await moveTask(moveInfo)
 
     const newDashboard = [...dashboard]
     const sourceColumnIndex = newDashboard.findIndex(
@@ -87,13 +71,26 @@ const Board = () => {
       task => task._id === draggableId
     )
 
+    // Kaynak sütundan görevi kaldır
     newDashboard[sourceColumnIndex].tasks.splice(source.index, 1)
+
+    // Hedef sütuna görevi ekle
     newDashboard[destinationColumnIndex].tasks.splice(
       destination.index,
       0,
       draggedTask
     )
+
     setDashboard(newDashboard)
+
+    // Move işlemini API'ye gönder
+    moveTask({
+      sourceBoardName,
+      destinationBoardName,
+      taskId: draggableId,
+      sourceIndex: source.index,
+      destinationIndex: destination.index,
+    })
   }
 
   const [formData, setFormData] = useState({
@@ -125,6 +122,8 @@ const Board = () => {
           : board
       )
     )
+
+    // Yeni veri eklendikten sonra formu sıfırlayın ve state'i güncelleyin
     setFormData({
       name: "",
       description: "",
