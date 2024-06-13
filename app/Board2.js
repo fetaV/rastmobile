@@ -253,7 +253,7 @@ const Board = () => {
       </DragDropContext>
       {editTaskId && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded shadow-lg">
+          <div className="bg-white p-6 text-black rounded shadow-lg">
             <h2 className="text-lg font-semibold mb-4">Edit Task</h2>
             <form onSubmit={handleEditTask}>
               <div className="mb-4">
