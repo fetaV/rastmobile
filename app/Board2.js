@@ -50,16 +50,22 @@ const Board = () => {
     setMenuOpen(!menuOpen)
   }
 
-  const handleDragEnd = result => {
+  const handleDragEnd = async result => {
     const { destination, source, draggableId } = result
 
-    if (!destination) {
+    // Eğer hedef yoksa veya hedef kaynağın aynısıysa hiçbir şey yapmayın
+    if (
+      !destination ||
+      (destination.droppableId === source.droppableId &&
+        destination.index === source.index)
+    ) {
       return
     }
 
     const sourceBoardName = findBoardNameByBoardId(source.droppableId)
     const destinationBoardName = findBoardNameByBoardId(destination.droppableId)
 
+    // Optimistik Güncelleme
     const newDashboard = [...dashboard]
     const sourceColumnIndex = newDashboard.findIndex(
       column => column._id === source.droppableId
@@ -84,7 +90,7 @@ const Board = () => {
     setDashboard(newDashboard)
 
     // Move işlemini API'ye gönder
-    moveTask({
+    await moveTask({
       sourceBoardName,
       destinationBoardName,
       taskId: draggableId,
