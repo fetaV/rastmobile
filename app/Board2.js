@@ -115,27 +115,33 @@ const Board = () => {
 
   const handleAdd = async e => {
     e.preventDefault()
-    const flagId = findNextFlagId()
-    const newTask = await createTask({
-      ...formData,
-      flagId: flagId,
-    })
+    const flagId = findNextFlagId() // Assuming findNextFlagId function is defined elsewhere
 
-    // Yeni eklenen görevi uygun boarda ekleyin
-    setDashboard(prevDashboard =>
-      prevDashboard.map(board =>
-        board.name === formData.boardName
-          ? { ...board, tasks: [...board.tasks, newTask] } // Yeni görevi ekleyin
-          : board
+    try {
+      const newTask = await createTask({
+        ...formData,
+        flagId: flagId,
+      })
+
+      // Assuming setDashboard and setFormData are state setters
+      setDashboard(prevDashboard =>
+        prevDashboard.map(board =>
+          board.name === formData.boardName
+            ? { ...board, tasks: [...board.tasks, newTask] }
+            : board
+        )
       )
-    )
 
-    // Formu sıfırlayın
-    setFormData({
-      name: "",
-      description: "",
-      boardName: "Backlog",
-    })
+      // Reset form data
+      setFormData({
+        name: "",
+        description: "",
+        boardName: "Backlog",
+      })
+    } catch (error) {
+      console.error("Error creating task:", error)
+      // Handle error state or feedback as needed
+    }
   }
 
   const findBoardNameByTaskId = taskId => {
@@ -211,38 +217,42 @@ const Board = () => {
                     {...provided.droppableProps}
                     className="p-2 rounded"
                   >
-                    {board.tasks.map((task, index) => (
-                      <Draggable
-                        key={task._id}
-                        draggableId={task._id.toString()}
-                        index={index}
-                      >
-                        {(provided, snapshot) => (
-                          <div
-                            className="text-white shadow-md rounded-lg mb-4"
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                          >
-                            <Card
-                              title={task.name}
-                              description={task.description}
-                              style={{ backgroundColor: "#C340A1" }}
-                              onDelete={() =>
-                                handleDeleteTask(task._id, board.name)
-                              }
-                              onEdit={() => {
-                                setEditTaskId(task._id)
-                                setEditTaskFormData({
-                                  name: task.name,
-                                  description: task.description,
-                                })
-                              }}
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
+                    {board &&
+                      board.tasks &&
+                      Array.isArray(board.tasks) &&
+                      board.tasks.map((task, index) => (
+                        <Draggable
+                          key={task._id}
+                          draggableId={task._id.toString()}
+                          index={index}
+                        >
+                          {(provided, snapshot) => (
+                            <div
+                              className="text-white shadow-md rounded-lg mb-4"
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <Card
+                                title={task.name}
+                                description={task.description}
+                                style={{ backgroundColor: "#C340A1" }}
+                                onDelete={() =>
+                                  handleDeleteTask(task._id, board.name)
+                                }
+                                onEdit={() => {
+                                  setEditTaskId(task._id)
+                                  setEditTaskFormData({
+                                    name: task.name,
+                                    description: task.description,
+                                  })
+                                }}
+                              />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+
                     {provided.placeholder}
                   </div>
                 )}
