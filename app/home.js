@@ -1,6 +1,7 @@
+// home.js
+import React from "react"
 import Head from "next/head"
-import Board2 from "./Board2"
-import CreateBoard from "./CreateBoard"
+import "./global.css"
 
 export default function Home() {
   return (
@@ -11,10 +12,7 @@ export default function Home() {
       </Head>
 
       <main>
-        <Board2 />
-      </main>
-      <main>
-        <CreateBoard />
+        <index />
       </main>
     </div>
   )
