@@ -1,7 +1,7 @@
-// home.js
+// pages/index.js
 import React from "react"
 import Head from "next/head"
-import "./global.css"
+import Link from "next/link"
 
 export default function Home() {
   return (
@@ -11,9 +11,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <index />
-      </main>
+      <Link href="/board">Go to Board 2</Link>
+
+      <Link href="/createboard">Go to Create Board</Link>
     </div>
   )
 }
