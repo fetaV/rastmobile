@@ -167,65 +167,69 @@ const Board = () => {
 
   return (
     <>
-      <div class=" form-container p-8 rounded-lg shadow-md w-full max-w-md mx-4 md:mx-auto column">
-        <form onSubmit={handleAdd}>
-          <h2 class="text-2xl font-bold mb-6 text-white text-center">
-            Create Task
-          </h2>
+      <div class="flex items-center justify-center mt-4">
+        <div class="form-container p-8 rounded-lg shadow-md w-full max-w-md mx-4 md:mx-auto column">
+          <form onSubmit={handleAdd}>
+            <h2 class="text-2xl font-bold mb-6 text-white text-center">
+              Create Task
+            </h2>
 
-          <div class="mb-4">
-            <label class="block text-gray-300 font-semibold mb-2">
-              Task Name:
-            </label>
-            <input
-              type="text"
-              name="name"
-              class="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={formData.name}
-              onChange={handleChange}
-            />
-          </div>
+            <div class="mb-4">
+              <label class="block text-gray-300 font-semibold mb-2">
+                Task Name:
+              </label>
+              <input
+                type="text"
+                name="name"
+                class="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={formData.name}
+                onChange={handleChange}
+              />
+            </div>
 
-          <div class="mb-4">
-            <label class="block text-gray-300 font-semibold mb-2">
-              Description:
-            </label>
-            <input
-              type="text"
-              name="description"
-              class="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={formData.description}
-              onChange={handleChange}
-            />
-          </div>
+            <div class="mb-4">
+              <label class="block text-gray-300 font-semibold mb-2">
+                Description:
+              </label>
+              <input
+                type="text"
+                name="description"
+                class="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={formData.description}
+                onChange={handleChange}
+              />
+            </div>
 
-          <div class="mb-4">
-            <label class="block text-gray-300 font-semibold mb-2">Board:</label>
-            <select
-              name="boardName"
-              value={formData.boardName}
-              onChange={handleChange}
-              class="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            <div class="mb-4">
+              <label class="block text-gray-300 font-semibold mb-2">
+                Board:
+              </label>
+              <select
+                name="boardName"
+                value={formData.boardName}
+                onChange={handleChange}
+                class="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {dashboard.map(board => (
+                  <option
+                    key={board._id}
+                    value={board.name}
+                    class="bg-gray-700 text-white"
+                  >
+                    {board.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              class="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
             >
-              {dashboard.map(board => (
-                <option
-                  key={board._id}
-                  value={board.name}
-                  class="bg-gray-700 text-white"
-                >
-                  {board.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <button
-            type="submit"
-            class="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
-          >
-            Create Task
-          </button>
-        </form>
+              Create Task
+            </button>
+          </form>
+        </div>
       </div>
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4">
