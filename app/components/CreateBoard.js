@@ -30,14 +30,17 @@ export default function App() {
     setId(e.target.value)
   }
 
+  const routeBoard = id => {
+    console.log(id)
+  }
+
   const handleButtonClick = async () => {
-    console.log("123")
     if (id) {
       try {
         await saveId({ idValue: id })
         setId("") // ID'i temizle
         fetchData() // Yeniden verileri al
-        router.push(`/${id}/dashboard`) // Yönlendirme işlemi
+        router.push(`/board/${id}`) // Yönlendirme işlemi
       } catch (error) {
         console.error("Error saving ID:", error)
       }
@@ -71,7 +74,9 @@ export default function App() {
         <h2>Saved IDs:</h2>
         <ul>
           {ids.map((savedId, index) => (
-            <li key={index}>{savedId.idValue}</li>
+            <li key={index}>
+              <button onClick={routeBoard(savedId)}>{savedId.idValue}</button>
+            </li>
           ))}
         </ul>
       </div>
