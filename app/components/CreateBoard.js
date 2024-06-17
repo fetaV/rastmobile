@@ -30,8 +30,13 @@ export default function App() {
     setId(e.target.value)
   }
 
-  const routeBoard = id => {
-    console.log(id)
+  const routeBoard = async id => {
+    try {
+      let routeID = id.idValue
+      router.push(`/board/${routeID}`) // Yönlendirme işlemi
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const handleButtonClick = async () => {
@@ -75,7 +80,7 @@ export default function App() {
         <ul>
           {ids.map((savedId, index) => (
             <li key={index}>
-              <button onClick={routeBoard(savedId)}>{savedId.idValue}</button>
+              <button onClick={routeBoard(saveId)}>{savedId.idValue}</button>
             </li>
           ))}
         </ul>
