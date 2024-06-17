@@ -1,8 +1,12 @@
 // pages/board.js
 import Head from "next/head"
 import Board2 from "../app/components/Board2"
+import { useRouter } from "next/router"
 
 const BoardPage = () => {
+  const router = useRouter()
+  const { id } = router.query
+
   return (
     <div>
       <Head>
@@ -11,7 +15,7 @@ const BoardPage = () => {
       </Head>
 
       <main>
-        <Board2 />
+        <Board2 id={id} />
       </main>
     </div>
   )
