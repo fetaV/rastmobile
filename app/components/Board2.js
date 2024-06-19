@@ -2,7 +2,7 @@
 "use client"
 import React, { useState, useEffect } from "react"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
-import Card from "../Card"
+import Card from "./Card"
 import { getBoards, createTask, updateTask, deleteTask, moveTask } from "../api"
 
 const Board = () => {
