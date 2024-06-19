@@ -52,14 +52,9 @@ const Board = () => {
     }
   }
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen)
-  }
-
   const handleDragEnd = async result => {
     const { destination, source, draggableId } = result
 
-    // Eğer hedef yoksa veya hedef kaynağın aynısıysa hiçbir şey yapmayın
     if (
       !destination ||
       (destination.droppableId === source.droppableId &&
@@ -71,7 +66,6 @@ const Board = () => {
     const sourceBoardName = findBoardNameByBoardId(source.droppableId)
     const destinationBoardName = findBoardNameByBoardId(destination.droppableId)
 
-    // Optimistik Güncelleme
     const newDashboard = [...dashboard]
     const sourceColumnIndex = newDashboard.findIndex(
       column => column._id === source.droppableId
@@ -83,10 +77,8 @@ const Board = () => {
       task => task._id === draggableId
     )
 
-    // Kaynak sütundan görevi kaldır
     newDashboard[sourceColumnIndex].tasks.splice(source.index, 1)
 
-    // Hedef sütuna görevi ekle
     newDashboard[destinationColumnIndex].tasks.splice(
       destination.index,
       0,
@@ -121,7 +113,7 @@ const Board = () => {
 
   const handleAdd = async e => {
     e.preventDefault()
-    const flagId = findNextFlagId() // Assuming findNextFlagId function is defined elsewhere
+    const flagId = findNextFlagId()
 
     try {
       const newTask = await createTask({
@@ -129,7 +121,6 @@ const Board = () => {
         flagId: flagId,
       })
 
-      // Assuming setDashboard and setFormData are state setters
       setDashboard(prevDashboard =>
         prevDashboard.map(board =>
           board.name === formData.boardName
@@ -138,7 +129,6 @@ const Board = () => {
         )
       )
 
-      // Reset form data
       setFormData({
         name: "",
         description: "",
@@ -146,7 +136,6 @@ const Board = () => {
       })
     } catch (error) {
       console.error("Error creating task:", error)
-      // Handle error state or feedback as needed
     }
   }
 
