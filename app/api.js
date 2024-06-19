@@ -48,12 +48,16 @@ export const deleteTask = async (taskId, boardName) => {
       headers: {
         "Content-Type": "application/json",
       },
-      data: { boardName }, // send data in 'data' key for DELETE requests with axios
+      data: { boardName },
     })
+    console.log(`Response from delete task:`, response.data)
     return response.data
   } catch (error) {
-    console.error("Error deleting task:", error)
-    throw error // rethrow or handle as needed
+    console.error(
+      "Error deleting task:",
+      error.response ? error.response.data : error.message
+    )
+    throw error
   }
 }
 

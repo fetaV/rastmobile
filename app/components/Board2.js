@@ -37,13 +37,19 @@ const Board = () => {
   }
 
   const handleDeleteTask = async (taskId, boardName) => {
-    await deleteTask(taskId, boardName)
-    setDashboard(prevDashboard =>
-      prevDashboard.map(board => ({
-        ...board,
-        tasks: board.tasks.filter(task => task._id !== taskId),
-      }))
-    )
+    try {
+      console.log(`Deleting task ${taskId} from board ${boardName}`)
+      await deleteTask(taskId, boardName)
+      setDashboard(prevDashboard =>
+        prevDashboard.map(board => ({
+          ...board,
+          tasks: board.tasks.filter(task => task._id !== taskId),
+        }))
+      )
+      console.log(`Task ${taskId} deleted successfully`)
+    } catch (error) {
+      console.error(`Error in handleDeleteTask:`, error)
+    }
   }
 
   const toggleMenu = () => {
